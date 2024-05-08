@@ -1,0 +1,74 @@
+﻿@model MVCTest.Models.Employee
+
+<h1>Add Employee</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Firstname"></label>
+        <input asp-for="Firstname" class="form-control" required maxlength="100" />
+        <span asp-validation-for="Firstname" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Lastname"></label>
+        <input asp-for="Lastname" class="form-control" required  maxlength="100"/>
+        <span asp-validation-for="Lastname" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EmailAddress"></label>
+        <input asp-for="EmailAddress" class="form-control" required maxlength="100" />
+        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control"  maxlength="10"/>
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DesignationIdRef"></label>
+        <select asp-for="DesignationIdRef" class="form-control" required>
+            <option value="">Select Designation</option>
+            @foreach (var designation in ViewBag.Designations)
+            {
+                <option value="@designation.Id">@designation.DesignationName</option>
+            }
+        </select>
+        <span asp-validation-for="DesignationIdRef" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="GradeIdRef"></label>
+        <select asp-for="GradeIdRef" class="form-control" required>
+            <option value="">Select Grade</option>
+            @foreach (var grade in ViewBag.Grades)
+            {
+                <option value="@grade.Id">@grade.Gradename</option>
+            }
+        </select>
+        <span asp-validation-for="GradeIdRef" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Add" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var emailInput = document.querySelector('input[name="EmailAddress"]');
+        emailInput.addEventListener('blur', function () {
+            var email = this.value;
+            $.get('/Employee/IsEmailUnique?email=' + email, function (data) {
+                if (!data) {
+                    var errorSpan = document.querySelector('span[data-valmsg-for="EmailAddress"]');
+                    errorSpan.innerHTML = "Email must be unique!";
+                    emailInput.setCustomValidity('Email must be unique!');
+                } else {
+                    var errorSpan = document.querySelector('span[data-valmsg-for="EmailAddress"]');
+                    errorSpan.innerHTML = "";
+                    emailInput.setCustomValidity('');
+                }
+            });
+        });
+    </script>
+}
